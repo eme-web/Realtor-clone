@@ -70,7 +70,7 @@ export default function CreateListing() {
         let geolocation = {};
         let location; 
         if(geolocationEnabled){
-            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_FIREBASE_API_KEY}`);
+            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_FIREBASE_API_KEYcd}`);
             const data = await response.json() 
             console.log(data);
             geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
@@ -139,6 +139,7 @@ export default function CreateListing() {
             imgUrls,
             geolocation,
             timestamp: serverTimestamp(),
+            userRef: auth.currentUser.uid,
         };
         delete formDataCopy.images;
         !formDataCopy.offer && delete formDataCopy.discountedPrice;
