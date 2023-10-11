@@ -7,7 +7,7 @@ service cloud.firestore {
         match /listings/{listing} {
             allow read;
             allow create: if request.auth != null && request.resource.data.imgUrls.size() < 7;
-            allow delete: if resorce.data.userRef == request.auth.uid;
+            allow delete: if resource.data.userRef == request.auth.uid;
             allow update: if resource.data.userRef == request.auth.uid;
         }
         // users
