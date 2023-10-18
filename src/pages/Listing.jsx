@@ -9,6 +9,7 @@ import "swiper/css/bundle"
 import { FaShare, FaMapMarkerAlt, FaBed, FaBath, FaParking, FaChair } from "react-icons/fa";
 import {getAuth} from "firebase/auth";
 import Contact from '../components/Contact';
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 export default function Listing() {
     const auth = getAuth()
@@ -60,14 +61,17 @@ export default function Listing() {
 
     <div className="m-4 flex flex-col md:flex-row max-w-6xl lg:mx-auto p-4 rounded-lg shadow-lg bg-white lg:space-x-5">
         <div className="w-full ">
-            <p className="text-2xl font-bold mb-3 text-blue-900">
-             {listing.name} - $ {listing.offer ? listing.discountedPrice
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 
-                listing.regularPrice.toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                {listing.type === "rent" ? " / month" : ""}  
-            </p>
+        <p className="text-2xl font-bold mb-3 text-blue-900">
+            {listing.name} - ${" "}
+            {listing.offer
+              ? listing.discountedPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              : listing.regularPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            {listing.type === "rent" ? " / month" : ""}
+          </p>
             <p className="flex items-center mt-6 mb-3 font-semibold"> 
                 <FaMapMarkerAlt className="text-green-700 mr-1" />
                 {listing.address}
@@ -109,7 +113,26 @@ export default function Listing() {
             {contactLandlord && ( <Contact userRef={listing.userRef} listing={listing} /> )}
            
         </div>
-        <div className="bg-blue-300 w-full h-[200px] lg-[400px] z-10 overflow-x-hidden "></div>
+        <div className=" w-full h-[200px] lg-[400px] z-10 overflow-x-hidden ">
+        <MapContainer
+            center={[listing.geolocation.lat, listing.geolocation.lng]}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker
+              position={[listing.geolocation.lat, listing.geolocation.lng]}
+            >
+              <Popup>
+                {listing.address}
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
     </div>
 
   </main>
